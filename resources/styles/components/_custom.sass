@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Jost:wght@200&display=swap')
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway&display=swap')
+
+$primary: '#116466'
+$secondary: '#2C3531'
+$success: '#21c1d6'
+$accent: 'FFCB9A'
+$default: 'D1E8E2'
+
+// $headline: 'Bree Serif', serif
+$headline: 'Montserrat', sans-serif
+// $para: 'Jost', sans-serif
+$para: 'Raleway', sans-serif
+
+body
+  font-family: $headline
+
+h1,h2,h3,h4,h5
+  font-family: $headline
+
+p, div
+  font-family: $para
+
+.title
+  z-index: 99
+  font-family: $headline
+
+
+.v-alert__content
+  font-family: $para
+
+
+#g-map
+  width: 100%
+  font-size: 2em
+  color: $primary
+
+@media (max-width: 900px)
+.no-margins
+  position: fixed
+  width: 100%
+  left: 0
+  top: 0
