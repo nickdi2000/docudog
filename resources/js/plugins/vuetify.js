@@ -11,13 +11,14 @@ const theme = {
     default: '#563dea'
 }
 
-const sleek = {
-	primary: '#116466',
-	secondary: '#2C3531',
-	success_: '#D9B08C',
-	success: '#21c1d6',
-	accent: 'FFCB9A',
-	default: 'D1E8E2',
+const dog = {
+      primary: '#795548',
+      secondary: '#ffc107',
+      accent: '#ff9800',
+      error: '#ff5722',
+      warning: '#cddc39',
+      info: '#00bcd4',
+      success: '#4caf50'
 }
 
 Vue.use(Vuetify, {
@@ -32,8 +33,8 @@ Vue.use(VuetifyToast)
 export default new Vuetify({
     theme: {
         themes: {
-          dark: sleek,
-          light: sleek,
+          dark: dog,
+          light: dog,
         },
       },
 			icons: {

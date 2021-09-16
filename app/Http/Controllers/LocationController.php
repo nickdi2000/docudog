@@ -21,6 +21,7 @@ class LocationController extends Controller
 
     $location['name'] = $data['details']['name'];
     $location['comments'] = $data['details']['comments'];
+    $location['breed'] = $data['details']['breed'];
     $location['longitude'] = $data['marker']['lng'];
     $location['latitude'] = $data['marker']['lat'];
 

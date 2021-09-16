@@ -1,32 +1,22 @@
 <template>
 
   <v-container fluid class="w-100">
-    <v-card style="height:100%" v-if="!admin">
-      <GmapMap :center="center"
-               :zoom="zoom"
-               map-type-id="terrain"
-               style="width: 100%; height: 600px">
-        <GmapMarker :key="index"
-                    v-for="(m, index) in markers"
-                    :position="m.position"
-                    :clickable="true"
-                    :draggable="true"
-                    @click="markerClicked(m)"
-                    :icon="dogIcon" />
 
-        <gmap-info-window
-           @closeclick="closeWindow()"
-           :opened="windowOpen"
-           :position="windowLocation"
-           >
-           <formatted-location :location="currentLocation" />
-       </gmap-info-window>
-      </GmapMap>
-    </v-card>
+    <v-card class="pa-md-4 mx-lg-auto">
 
-    <v-card v-if="isAdmin" class="pa-md-4 mx-lg-auto">
+      <v-alert  border="top"
+      colored-border
+      type="info"
+      elevation="2"
+      v-if="currentDog" class="my-2 mx-2">
+        <strong>You have already reported a dog:</strong><br/>
+        {{ existingDog.name }}, {{ existingDog.breed}} <br/>
+        {{ existingDog.comments }}
 
-      <v-card-text v-if="admin">
+      </v-alert>
+
+
+      <v-card-text v-if="showForm">
 
 				 <v-progress-circular
 					 v-if="saving"
@@ -34,7 +24,7 @@
 					 color="primary"
 				 ></v-progress-circular>
 
-			 <span v-else>
+
         <gmap-autocomplete @place_changed="initMarker"
                            tag="v-text-field"
                            outlined
@@ -43,19 +33,37 @@
         </gmap-autocomplete>
 
         <v-text-field v-model="locationDetails.name" outlined
-                      label="Name" /></v-text-field>
+                      label="Dog Name (If available)" />
+                    </v-text-field>
+        <v-text-field v-model="locationDetails.breed" outlined
+                      label="Breed" />
+                    </v-text-field>
+
+                    <v-combobox
+          v-model="locationDetails.breed"
+          :items="breeds"
+          label="name"
+          multiple
+          outlined
+          dense
+        ></v-combobox>
 
         <v-textarea outlined label="Comments" v-model="locationDetails.comments"></v-textarea>
 
 
-				<v-btn color="success" @click="addLocationMarker">Save Location</v-btn>
-        <v-btn @click="admin=false">Cancel</v-btn>
-			</span>
+				<v-btn color="success" @click="addLocationMarker">Submit Dogs Location</v-btn>
+        <v-btn @click="showForm=false">Cancel</v-btn>
       </v-card-text>
 
-      <v-card-text class="d-flex m-4 p-4" v-else>
-        <v-btn color="default" class="py-2 mx-2" small @click="showAdmin()">Add New Location</v-btn>
-      </v-card-text>
+      <v-card-text v-else>
+        <v-layout justify-center align-items-center class="my-auto">
+          <div>
+            <v-btn color="primary" block large class="py-2 mx-2" @click="showForm = true">Report a Lost Dog!</v-btn>
+          </div>
+        </v-layout>
+        </v-card-text>
+
+
     </v-card>
 
   </v-container>
@@ -66,6 +74,7 @@
 
   import axios from 'axios'
   import FormattedLocation from '~/components/admin/shared/FormattedLocation';
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'google-map',
@@ -75,7 +84,6 @@
         windowOpen: false,
         windowLocation: null,
         currentLocation: null,
-				beer_icon: {},
         center: {
           lat: 43.2392954,
           lng: -79.8775022
@@ -87,17 +95,23 @@
         existingPlace: null,
         locationDetails: {
           name: '',
-          comments: ''
+          comments: '',
+          breed: ''
         },
-        admin: false,
+        showForm: false,
 				saving: false,
+        existingDog: {},
+        breeds: [],
 
       }
     },
-    props: ['markers', 'isAdmin'],
-
+    props: ['markers'],
+    computed: mapGetters({
+      currentDog: 'dog/dog'
+    }),
     mounted() {
-      this.locateGeoLocation();
+      this.existingDog = JSON.parse(this.currentDog);
+      axios.get('https://api.thecatapi.com/v1/breeds').then(res => { this.breeds = res.data });
     },
 
     methods: {
@@ -111,16 +125,7 @@
       closeWindow(){
         this.windowOpen = false;
       },
-      showAdmin() {
-        if (prompt('password') == 'lint') {
-          this.admin = true
-          this.$toast.error('Good')
-        } else {
-          this.$toast.error('Wrong Pass')
-        }
-      },
       initMarker(loc) {
-        this.locationDetails.name = loc.name
         this.existingPlace = loc
       },
       async addLocationMarker() {
@@ -140,9 +145,11 @@
 
           await axios.post('/api/location', location).then(res => {
             console.log(res)
-            this.$toast.success('Location Added');
-						this.showForm = false;
+            this.$toast.success('Lost Dog Reported');
+            this.$store.dispatch('dog/setDog', {dog: location.details});
 						this.saving = false;
+            this.showForm = false;
+            this.locationDetails = {};
 
           });
 					this.$emit('get-locations');
@@ -166,18 +173,7 @@
         })
       },
     },
-    computed: {
-      dogIcon() {
-        return {
-          url: '/images/dog-icon.png', // url
-          scaledSize: new google.maps.Size(50, 50), // scaled size
-          origin: new google.maps.Point(0, 0), // origin
-          anchor: new google.maps.Point(0, 0) // anchor
-        }
-      },
 
-    }
   }
 
 </script>
-\

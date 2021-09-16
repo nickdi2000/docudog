@@ -9,26 +9,31 @@
             class="px-0 mx-0">
       <v-tabs-slider></v-tabs-slider>
 
+      <v-tab href="#tab-add">
+        Add
+        <v-icon>mdi-plus</v-icon>
+      </v-tab>
+
+      <v-tab href="#tab-list">
+        Dogs
+        <v-icon>mdi-format-list-bulleted</v-icon>
+      </v-tab>
+
+
       <v-tab href="#tab-map">
         Map
         <v-icon>mdi-map</v-icon>
       </v-tab>
 
-      <v-tab href="#tab-list">
-        List
-        <v-icon>mdi-format-list-bulleted</v-icon>
-      </v-tab>
 
     </v-tabs>
 
     <v-tabs-items v-model="tab" fill-height>
-      <v-tab-item value="tab-map" v-if="locations">
-        <v-card flat >
-          <gMap
 
-					:markers="locations"
-					:isAdmin="isAdmin"
-					 @get-locations="getLocations()" />
+      <v-tab-item value="tab-add">
+        <v-card flat>
+          <AddDog :locations="locations"
+                @get-locations="getLocations()" />
         </v-card>
       </v-tab-item>
 
@@ -40,15 +45,18 @@
         </v-card>
       </v-tab-item>
 
+      <v-tab-item value="tab-map" v-if="locations">
+        <v-card flat >
+          <gMap
+
+					:markers="locations"
+					:isAdmin="isAdmin"
+					 @get-locations="getLocations()" />
+        </v-card>
+      </v-tab-item>
+
     </v-tabs-items>
-		<v-container class="w-100 d-flex" fluid justify-center align-center>
-			<v-btn x-small><v-icon>reply</v-icon> &nbsp; Back to Linktr.ee/2pintguys</v-btn>
-		</v-container>
-<!--
-		<v-container class="w-100 d-flex" fluid justify-center align-center>
-			<a href="https://webfly.io" style="font-size:0.8em;color:gray;">design</a>
-		</v-container>
-	-->
+
 
   </v-container>
 
@@ -58,12 +66,14 @@
 
   import axios from 'axios'
   import gMap from './Map'
+  import AddDog from './AddDog'
   import List from './List'
 
   export default {
     components: {
       gMap,
-      List
+      List,
+      AddDog
     },
     data() {
       return {

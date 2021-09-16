@@ -6,8 +6,8 @@ import * as types from '../mutation-types'
  * Initial state
  */
 export const state = {
-  user: null,
-  token: window.localStorage.getItem('token')
+  token: window.localStorage.getItem('token'),
+  dog: window.localStorage.getItem('dog'),
 }
 
 /**
@@ -17,6 +17,13 @@ export const mutations = {
   [types.SET_USER](state, { user }) {
     state.user = user
   },
+
+  [types.SET_DOG](state, { dog }) {
+    let data = JSON.stringify(dog)
+    state.dog = data
+    window.localStorage.setItem('dog', data)
+  },
+
 
   [types.LOGOUT](state) {
     state.user = null
@@ -39,6 +46,10 @@ export const mutations = {
  * Actions
  */
 export const actions = {
+  setDog({ commit }, payload) {
+    commit(types.SET_DOG, payload)
+  },
+
   saveToken({ commit }, payload) {
     commit(types.SET_TOKEN, payload)
   },
@@ -70,7 +81,6 @@ export const actions = {
  * Getters
  */
 export const getters = {
-  user: state => state.user,
-  check: state => state.user !== null,
-  token: state => state.token
+  dog: state => state.dog,
+
 }

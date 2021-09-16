@@ -20,6 +20,7 @@ class CreateLocationsTable extends Migration
             $table->decimal('longitude', 10, 7)->nullable();
             $table->string('url')->nullable();
             $table->string('name')->nullable();
+            $table->string('breed')->nullable();
             $table->string('formatted_address')->nullable();
             $table->string('comments')->nullable();
         });
