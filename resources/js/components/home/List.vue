@@ -1,6 +1,8 @@
 <template>
 
-  <v-container fluid class="w-100 my-0">
+  <v-container fluid class="w-100 my-0" >
+		<v-alert v-if="showWarning()" class="high-alert" color="error">Too many dogs are lost</v-alert>
+
     <v-card v-for="(loc, index) in locations"
             class="mx-auto my-2 "
             outlined
@@ -37,17 +39,13 @@
 import axios from 'axios'
 
   export default {
-    props: ['locations', 'isAdmin'],
+    props: ['locations'],
     data() {
       return {
-        beerAvatar: '/images/beer-clink.png',
-        revealed: null,
+				items: this.locations
       }
     },
     methods: {
-      revealInfo(i){
-        this.revealed = this.revealed ? null : i;
-      },
 			destroy(id){
 				axios.delete("/api/location/" + id)
 					.then(res =>{
@@ -55,9 +53,10 @@ import axios from 'axios'
 						this.$emit('get-locations');
 					});
 			},
-      isRevealed(i){
-        return this.revealed == i;
-      }
+			showWarning(){
+				// console.log(this.items.length);
+				return this.items.length > 2 ? true : false;
+			}
     }
   }
 

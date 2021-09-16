@@ -46,12 +46,11 @@
         <v-btn @click="showForm=false">Cancel</v-btn>
       </v-card-text>
 
-      <v-card-text v-else>
-        <v-layout justify-center align-items-center class="my-auto">
-          <div>
-            <v-btn color="primary" block large class="py-2 mx-2" @click="showForm = true">Report a Lost Dog!</v-btn>
-          </div>
-        </v-layout>
+      <v-card-text v-if="!showForm && !currentDog">
+          <v-flex fluid style="width:100%;text-align:center">
+							<img src="/images/dog-icon.png" style="width:20%" align-self-center /><br/>
+            	<v-btn id="reportDogBtn" color="primary" large class="py-2 mx-2" @click="showForm = true">Report a Lost Dog!</v-btn>
+					</v-flex>
         </v-card-text>
 
 
@@ -87,7 +86,7 @@
     computed: mapGetters({
       currentDog: 'dog/dog'
     }),
-    mounted() {
+    created() {
       this.existingDog = JSON.parse(this.currentDog);
     },
 

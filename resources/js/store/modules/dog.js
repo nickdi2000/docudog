@@ -6,17 +6,13 @@ import * as types from '../mutation-types'
  * Initial state
  */
 export const state = {
-  token: window.localStorage.getItem('token'),
-  dog: window.localStorage.getItem('dog'),
+  dog: window.localStorage.getItem('dog')
 }
 
 /**
  * Mutations
  */
 export const mutations = {
-  [types.SET_USER](state, { user }) {
-    state.user = user
-  },
 
   [types.SET_DOG](state, { dog }) {
     let data = JSON.stringify(dog)
@@ -24,22 +20,6 @@ export const mutations = {
     window.localStorage.setItem('dog', data)
   },
 
-
-  [types.LOGOUT](state) {
-    state.user = null
-    state.token = null
-    window.localStorage.removeItem('token')
-  },
-
-  [types.FETCH_USER_FAILURE](state) {
-    state.user = null
-    window.localStorage.removeItem('token')
-  },
-
-  [types.SET_TOKEN](state, { token }) {
-    state.token = token
-    window.localStorage.setItem('token', token)
-  }
 }
 
 /**
@@ -50,31 +30,6 @@ export const actions = {
     commit(types.SET_DOG, payload)
   },
 
-  saveToken({ commit }, payload) {
-    commit(types.SET_TOKEN, payload)
-  },
-
-  async fetchUser({ commit }) {
-    try {
-      const { data } = await axios.get(api.path('me'))
-      commit(types.SET_USER, data)
-    } catch (e) {
-      commit(types.FETCH_USER_FAILURE)
-    }
-  },
-
-  setUser({ commit }, payload) {
-    commit(types.SET_USER, payload)
-  },
-
-  async logout({ commit }) {
-    await axios.post(api.path('logout'))
-    commit(types.LOGOUT)
-  },
-
-  destroy({ commit }) {
-    commit(types.LOGOUT)
-  }
 }
 
 /**
