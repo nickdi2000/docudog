@@ -28,8 +28,8 @@
         <gmap-autocomplete @place_changed="initMarker"
                            tag="v-text-field"
                            outlined
-                           class="form-control my-4 py-2"
-                           style="width:100%;border-width:1px;border-style:solid;font-size:1.5em;%">
+                           class="form-control my-4 py-2 g-auto"
+                           >
         </gmap-autocomplete>
 
         <v-text-field v-model="locationDetails.name" outlined
@@ -38,15 +38,6 @@
         <v-text-field v-model="locationDetails.breed" outlined
                       label="Breed" />
                     </v-text-field>
-
-                    <v-combobox
-          v-model="locationDetails.breed"
-          :items="breeds"
-          label="name"
-          multiple
-          outlined
-          dense
-        ></v-combobox>
 
         <v-textarea outlined label="Comments" v-model="locationDetails.comments"></v-textarea>
 
@@ -73,31 +64,18 @@
 <script>
 
   import axios from 'axios'
-  import FormattedLocation from '~/components/admin/shared/FormattedLocation';
   import { mapGetters } from 'vuex'
 
   export default {
     name: 'google-map',
-    components: {FormattedLocation},
     data() {
       return {
-        windowOpen: false,
-        windowLocation: null,
-        currentLocation: null,
-        center: {
-          lat: 43.2392954,
-          lng: -79.8775022
-        },
-        zoom: 14,
-        savedLocations: [],
-        locationMarkers: [],
-        locPlaces: [],
-        existingPlace: null,
         locationDetails: {
           name: '',
           comments: '',
           breed: ''
         },
+				existingPlace: null,
         showForm: false,
 				saving: false,
         existingDog: {},
@@ -111,23 +89,12 @@
     }),
     mounted() {
       this.existingDog = JSON.parse(this.currentDog);
-      axios.get('https://api.thecatapi.com/v1/breeds').then(res => { this.breeds = res.data });
     },
 
     methods: {
-      markerClicked(m){
-        console.log(m);
-        this.windowOpen = true;
-        this.windowLocation = m.position;
-        this.currentLocation = m;
-
-      },
-      closeWindow(){
-        this.windowOpen = false;
-      },
-      initMarker(loc) {
-        this.existingPlace = loc
-      },
+			 initMarker(loc) {
+       this.existingPlace = loc
+     },
       async addLocationMarker() {
 				this.saving = true;
         if (this.existingPlace) {
@@ -150,11 +117,9 @@
 						this.saving = false;
             this.showForm = false;
             this.locationDetails = {};
+						this.$emit('get-locations');
 
           });
-					this.$emit('get-locations');
-					this.center = marker
-
 
         }
       },
@@ -163,14 +128,6 @@
           address: this.existingPlace,
           details: this.locationDetails
         }
-      },
-      locateGeoLocation: function() {
-        navigator.geolocation.getCurrentPosition(res => {
-          this.center = {
-            lat: res.coords.latitude,
-            lng: res.coords.longitude
-          }
-        })
       },
     },
 
